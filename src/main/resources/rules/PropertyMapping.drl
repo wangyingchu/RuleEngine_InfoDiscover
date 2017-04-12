@@ -1,0 +1,23 @@
+package com.info.discover
+
+//list any import classes here.
+import com.info.discover.drools.rules.propertyMapping.SourceInput;
+import com.info.discover.drools.rules.propertyMapping.TargetInput;
+
+//declare any global variables here
+global com.info.discover.drools.rules.propertyMapping.PropertyMappingOutput mapping;
+
+
+rule "PropertyMapping"
+	no-loop true
+    when
+        source: SourceInput(mysource:source, mysourceType:sourceType, mySourceProperties:sourceProperties)
+        target: TargetInput(mytarget:target, mytargetType:targetType, mytargetProperty:targetProperty)
+    then
+        mapping.setSource(mysource);
+        mapping.setSourceType(mysourceType);
+        mapping.setSourceProperties(mySourceProperties);
+        mapping.setTarget(mytarget);
+        mapping.setTargetType(mytargetType);
+        mapping.setTargetProperty(mytargetProperty);
+end
