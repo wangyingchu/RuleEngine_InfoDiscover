@@ -5,20 +5,20 @@ import com.info.discover.drools.rules.propertyMapping.TargetInput;
 import com.infoDiscover.common.util.JsonUtil;
 
 public class RuleContent {
-	private String ruleContent;
+	private String ruleContentJson;
 	private SourceInput source;
 	private TargetInput target;
 
-	public RuleContent(String ruleContent) {
-		this.ruleContent = ruleContent;
+	public RuleContent(String ruleContentJson) {
+		this.ruleContentJson = ruleContentJson;
 	}
 
 	public void setSourceInput() {
 
-		String source = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE, ruleContent);
-		String sourceType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_TYPE, ruleContent);
+		String source = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE, ruleContentJson);
+		String sourceType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_TYPE, ruleContentJson);
 		String sourceProperties = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_PROPERTIES,
-				ruleContent);
+				ruleContentJson);
 
 		SourceInput input = new SourceInput();
 		input.setSource(source);
@@ -31,9 +31,9 @@ public class RuleContent {
 	}
 
 	public void setTargetInput() {
-		String target = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET, ruleContent);
-		String targetType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_TYPE, ruleContent);
-		String targetProperty = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_PROPERTY, ruleContent);
+		String target = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET, ruleContentJson);
+		String targetType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_TYPE, ruleContentJson);
+		String targetProperty = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_PROPERTY, ruleContentJson);
 
 		TargetInput input = new TargetInput();
 		input.setTarget(target);

@@ -1,14 +1,14 @@
 package com.info.discover.ruleengine.base;
 
+import com.info.discover.ruleengine.base.vo.RuleVO;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineRuntimeException;
 
 public interface RuleEngine {
-    public boolean createRule(String ruleName, String description, String ruleType, String
-            ruleContent) throws InfoDiscoveryEngineRuntimeException;
+    public void createRule(RuleVO rule) throws InfoDiscoveryEngineRuntimeException;
     
-    public boolean updateRule(String ruleName, String description, String ruleType, String
-            ruleContent);
+    public void updateRule(RuleVO rule);
     
-    public boolean checkRuleIsExist(String ruleName);
+    public boolean checkRuleExistence(String ruleId);
     
+    public boolean deleteRule(String ruleId);
 }

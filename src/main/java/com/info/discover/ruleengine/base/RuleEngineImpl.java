@@ -1,51 +1,76 @@
 package com.info.discover.ruleengine.base;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.infoDiscover.infoDiscoverEngine.dataMart.Fact;
+import com.info.discover.ruleengine.base.vo.RuleVO;
+import com.info.discover.ruleengine.manager.database.DataSpaceManager;
+import com.info.discover.ruleengine.manager.database.DatabaseConstants;
+import com.info.discover.ruleengine.manager.database.RuleEngineFactManager;
 import com.infoDiscover.infoDiscoverEngine.infoDiscoverBureau.InfoDiscoverSpace;
+import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineInfoExploreException;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineRuntimeException;
-import com.infoDiscover.infoDiscoverEngine.util.factory.DiscoverEngineComponentFactory;
 
 public class RuleEngineImpl implements RuleEngine {
+	private final static Logger logger = LoggerFactory.getLogger(RuleEngineImpl.class);
 
-	public boolean createRule(String ruleName, String description, String ruleType, String ruleContent)
-			throws InfoDiscoveryEngineRuntimeException {
-		boolean result = false;
+	public void createRule(RuleVO rule) throws InfoDiscoveryEngineRuntimeException {
 
-		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace(RuleConstants.RuleEngineSpace);
+		if (rule == null) {
+			logger.error("New Rule is null");
+			throw new InfoDiscoveryEngineRuntimeException();
+		}
+
+		logger.info("Start to createRule() with ruleName: " + rule.getName());
+
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
 		if (ids != null) {
-			Fact fact = DiscoverEngineComponentFactory.createFact(RuleConstants.RuleFact);
-
-			fact = ids.addFact(fact);
-
-			Map<String, Object> props = new HashMap<String, Object>();
-			props.put(RuleConstants.FACT_NAME, ruleName);
-			props.put(RuleConstants.FACT_DESCRIPTION, description);
-			props.put(RuleConstants.FACT_TYPE, ruleType);
-			props.put(RuleConstants.FACT_CONTENT, ruleContent);
-
-			fact.addProperties(props);
-
-			result = true;
-
+			RuleEngineFactManager.createRule(ids, rule);
 		} else {
-			System.out.println("Failed to connect to database: " + RuleConstants.RuleEngineSpace);
+			logger.error("Failed to connect to database: " + DatabaseConstants.RuleEngineSpace);
 		}
 
 		ids.closeSpace();
 
+	}
+
+	public boolean checkRuleExistence(String ruleId) {
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		try {
+			return RuleEngineFactManager.checkRuleExistence(ids, DatabaseConstants.RuleFact, ruleId);
+		} catch (InfoDiscoveryEngineRuntimeException e) {
+			logger.error("Failed to check rule existence: " + e.getMessage());
+		} catch (InfoDiscoveryEngineInfoExploreException e) {
+			logger.error("Failed to check rule existence: " + e.getMessage());
+		} finally {
+			ids.closeSpace();
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean deleteRule(String ruleId) {
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		boolean result = false;
+		try {
+			result = RuleEngineFactManager.deleteRule(ids, DatabaseConstants.RuleFact, ruleId);
+		} catch (InfoDiscoveryEngineRuntimeException | InfoDiscoveryEngineInfoExploreException e) {
+			logger.error("Failed to delete rule: " + e.getMessage());
+		} finally {
+			ids.closeSpace();
+		}
 		return result;
 	}
 
-	public boolean updateRule(String ruleName, String description, String ruleType, String ruleContent) {
-		return false;
-	}
-
-	public boolean checkRuleIsExist(String ruleName) {
-		// TODO Auto-generated method stub
-		return false;
+	@Override
+	public void updateRule(RuleVO rule) {
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		try {
+			RuleEngineFactManager.updateRule(ids, DatabaseConstants.RuleFact, rule);
+		} catch (InfoDiscoveryEngineRuntimeException | InfoDiscoveryEngineInfoExploreException e) {
+			logger.error("Failed to update rule: " + e.getMessage());
+		}
 	}
 
 }

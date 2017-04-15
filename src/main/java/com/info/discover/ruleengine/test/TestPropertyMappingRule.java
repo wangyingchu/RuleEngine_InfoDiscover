@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.info.discover.ruleengine.base.RuleConstants;
+import com.info.discover.ruleengine.base.vo.RuleVO;
+import com.info.discover.ruleengine.manager.database.DatabaseConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingRuleEngineImpl;
 import com.infoDiscover.common.util.JsonUtil;
@@ -94,11 +95,13 @@ public class TestPropertyMappingRule {
         ruleContentMap.put("target", "Dimension");
         ruleContentMap.put("targetType", "dimensionTest");
         ruleContentMap.put("targetProperty", "name");
+        ruleContentMap.put("spaceName", "TestData");
 
         String ruleContent = JsonUtil.mapToJsonStr(ruleContentMap);
         System.out.println("ruleContent: " + ruleContent);
 
-        engine.createRule(ruleName, description, "PropertyMapping", ruleContent);
+        RuleVO rule = new RuleVO("ID_FACT_factTest", "ruleForFactTest","PropertyMapping", "desc", ruleContent);
+        engine.createRule(rule);
     }
 
     private void addFactTestData(String factType, String name, String description) {
@@ -117,10 +120,10 @@ public class TestPropertyMappingRule {
 
             } catch (InfoDiscoveryEngineRuntimeException e) {
                 System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + RuleConstants.RuleFact);
+                System.out.println("Failed to insert values to fact: " + DatabaseConstants.RuleFact);
             }
         } else {
-            System.out.println("Failed to connect to database: " + RuleConstants.RuleEngineSpace);
+            System.out.println("Failed to connect to database: " + DatabaseConstants.RuleEngineSpace);
         }
 
         ids.closeSpace();
@@ -142,10 +145,10 @@ public class TestPropertyMappingRule {
 
             } catch (InfoDiscoveryEngineRuntimeException e) {
                 System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + RuleConstants.RuleFact);
+                System.out.println("Failed to insert values to fact: " + DatabaseConstants.RuleFact);
             }
         } else {
-            System.out.println("Failed to connect to database: " + RuleConstants.RuleEngineSpace);
+            System.out.println("Failed to connect to database: " + DatabaseConstants.RuleEngineSpace);
         }
 
         ids.closeSpace();
