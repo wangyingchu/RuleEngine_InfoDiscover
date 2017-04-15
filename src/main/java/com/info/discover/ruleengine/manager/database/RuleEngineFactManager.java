@@ -25,30 +25,30 @@ public class RuleEngineFactManager {
 			throws InfoDiscoveryEngineDataMartException, InfoDiscoveryEngineRuntimeException {
 		logger.info("Start to createRuleFactType with properties");
 		Map<String, PropertyType> properties = new HashMap<String, PropertyType>();
-		properties.put(DatabaseConstants.FACT_RULENAME, PropertyType.STRING);
-		properties.put(DatabaseConstants.FACT_ID, PropertyType.STRING);
-		properties.put(DatabaseConstants.FACT_TYPE, PropertyType.STRING);
-		properties.put(DatabaseConstants.FACT_DESCRIPTION, PropertyType.STRING);
-		properties.put(DatabaseConstants.FACT_CONTENT, PropertyType.STRING);
+		properties.put(RuleEngineDatabaseConstants.FACT_RULENAME, PropertyType.STRING);
+		properties.put(RuleEngineDatabaseConstants.FACT_ID, PropertyType.STRING);
+		properties.put(RuleEngineDatabaseConstants.FACT_TYPE, PropertyType.STRING);
+		properties.put(RuleEngineDatabaseConstants.FACT_DESCRIPTION, PropertyType.STRING);
+		properties.put(RuleEngineDatabaseConstants.FACT_CONTENT, PropertyType.STRING);
 
-		FactManager.createFactType(ids, DatabaseConstants.RuleFact, properties);
+		FactManager.createFactType(ids, RuleEngineDatabaseConstants.RuleFact, properties);
 		logger.info("End to createRuleFactType()...");
 	}
 
-	public static void createRule(InfoDiscoverSpace ids, RuleVO rule) throws InfoDiscoveryEngineRuntimeException {
+	public static boolean createRule(InfoDiscoverSpace ids, RuleVO rule) throws InfoDiscoveryEngineRuntimeException {
 		logger.info("Start to createRuleFact with properties");
 		Map<String, Object> properties = convertRuleVOToMap(rule);
-		FactManager.createFact(ids, rule.getId(), properties);
 		logger.info("End to createRuleFact()...");
+		return FactManager.createFact(ids, RuleEngineDatabaseConstants.RuleFact, properties);
 	}
 
 	private static Map<String, Object> convertRuleVOToMap(RuleVO rule) {
 		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(DatabaseConstants.FACT_RULENAME, rule.getName());
-		properties.put(DatabaseConstants.FACT_ID, rule.getId());
-		properties.put(DatabaseConstants.FACT_TYPE, rule.getType());
-		properties.put(DatabaseConstants.FACT_DESCRIPTION, rule.getDescription());
-		properties.put(DatabaseConstants.FACT_CONTENT, rule.getContent());
+		properties.put(RuleEngineDatabaseConstants.FACT_RULENAME, rule.getName());
+		properties.put(RuleEngineDatabaseConstants.FACT_ID, rule.getRuleId());
+		properties.put(RuleEngineDatabaseConstants.FACT_TYPE, rule.getType());
+		properties.put(RuleEngineDatabaseConstants.FACT_DESCRIPTION, rule.getDescription());
+		properties.put(RuleEngineDatabaseConstants.FACT_CONTENT, rule.getContent());
 		return properties;
 	}
 
@@ -68,18 +68,18 @@ public class RuleEngineFactManager {
 		InformationExplorer ie = ids.getInformationExplorer();
 		ExploreParameters ep = new ExploreParameters();
 		ep.setType(factType);
-		ep.setDefaultFilteringItem(new EqualFilteringItem(DatabaseConstants.FACT_ID, ruleId));
+		ep.setDefaultFilteringItem(new EqualFilteringItem(RuleEngineDatabaseConstants.FACT_ID, ruleId));
 
 		logger.info("End to getRuleFact()...");
 		return FactManager.getFact(ie, ep);
 	}
 
-	private static RuleVO getRuleVOFromFact(Fact ruleFact) {
-		String ruleName = ruleFact.getProperty(DatabaseConstants.FACT_RULENAME).toString();
-		String id = ruleFact.getProperty(DatabaseConstants.FACT_ID).toString();
-		String ruleType = ruleFact.getProperty(DatabaseConstants.FACT_TYPE).toString();
-		String description = ruleFact.getProperty(DatabaseConstants.FACT_DESCRIPTION).toString();
-		String ruleContent = ruleFact.getProperty(DatabaseConstants.FACT_CONTENT).toString();
+	public static RuleVO getRuleVOFromFact(Fact ruleFact) {
+		String ruleName = ruleFact.getProperty(RuleEngineDatabaseConstants.FACT_RULENAME).getPropertyValue().toString();
+		String id = ruleFact.getProperty(RuleEngineDatabaseConstants.FACT_ID).getPropertyValue().toString();
+		String ruleType = ruleFact.getProperty(RuleEngineDatabaseConstants.FACT_TYPE).getPropertyValue().toString();
+		String description = ruleFact.getProperty(RuleEngineDatabaseConstants.FACT_DESCRIPTION).getPropertyValue().toString();
+		String ruleContent = ruleFact.getProperty(RuleEngineDatabaseConstants.FACT_CONTENT).getPropertyValue().toString();
 
 		return new RuleVO(id, ruleName, ruleType, description, ruleContent);
 	}
@@ -102,11 +102,13 @@ public class RuleEngineFactManager {
 		return result;
 	}
 
-	public static void updateRule(InfoDiscoverSpace ids, String factType, RuleVO rule)
+	public static boolean updateRule(InfoDiscoverSpace ids, String factType, RuleVO rule)
 			throws InfoDiscoveryEngineRuntimeException, InfoDiscoveryEngineInfoExploreException {
-		logger.info("Start to updateRule with ruleId: " + rule.getId());
-		Fact ruleFact = getRuleFact(ids, factType, rule.getId());
-		FactManager.updateFact(ids, ruleFact, convertRuleVOToMap(rule));
+		logger.info("Start to updateRule with ruleId: " + rule.getRuleId());
+		Fact ruleFact = getRuleFact(ids, factType, rule.getRuleId());
+		Fact fact = FactManager.updateFact(ids, ruleFact, convertRuleVOToMap(rule));
 		logger.info("End to updateRule()...");
+		return fact != null;
 	}
+	
 }

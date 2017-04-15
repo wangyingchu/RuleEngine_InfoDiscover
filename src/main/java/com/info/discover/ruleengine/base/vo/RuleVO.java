@@ -1,26 +1,28 @@
 package com.info.discover.ruleengine.base.vo;
 
 public class RuleVO {
-	private String id;
+	private String ruleId;
 	private String name;
 	private String type;
     private String description;
     private String content;
     
-    public RuleVO(String id, String name, String type, String description, String content) {
-    	this.id = id;
+    public RuleVO(String ruleId, String name, String type, String description, String content) {
+    	this.ruleId = ruleId;
     	this.name = name;
     	this.type = type;
     	this.description = description;
     	this.content = content;
     }
     
-	public String getId() {
-		return id;
+	public String getRuleId() {
+		return ruleId;
 	}
-	public void setId(String id) {
-		this.id = id;
+
+	public void setRuleId(String ruleId) {
+		this.ruleId = ruleId;
 	}
+
 	public String getName() {
 		return name;
 	}
@@ -46,5 +48,4 @@ public class RuleVO {
 		this.content = content;
 	}
 
-    
 }

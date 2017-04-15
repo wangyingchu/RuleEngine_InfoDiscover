@@ -4,12 +4,12 @@ import com.info.discover.drools.rules.propertyMapping.SourceInput;
 import com.info.discover.drools.rules.propertyMapping.TargetInput;
 import com.infoDiscover.common.util.JsonUtil;
 
-public class RuleContent {
+public class RuleContentVO {
 	private String ruleContentJson;
 	private SourceInput source;
 	private TargetInput target;
 
-	public RuleContent(String ruleContentJson) {
+	public RuleContentVO(String ruleContentJson) {
 		this.ruleContentJson = ruleContentJson;
 	}
 

@@ -7,7 +7,7 @@ import com.info.discover.drools.DroolsExecutor;
 import com.info.discover.drools.rules.propertyMapping.PropertyMappingOutput;
 import com.info.discover.drools.rules.propertyMapping.PropertyMappingRuleConstants;
 import com.info.discover.ruleengine.base.RuleEngineImpl;
-import com.info.discover.ruleengine.manager.database.DatabaseConstants;
+import com.info.discover.ruleengine.manager.database.RuleEngineDatabaseConstants;
 import com.info.discover.ruleengine.util.RuleHelper;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Dimension;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Fact;
@@ -27,7 +27,7 @@ public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements Pro
 	public List<Dimension> executeRule(String spaceName, Fact fact) {
 		String ruleName = InfoDiscoverEngineConstant.CLASSPERFIX_FACT + fact.getType();
 
-		RuleContent ruleContent = new RuleContent(getRuleContent(ruleName));
+		RuleContentVO ruleContent = new RuleContentVO(getRuleContent(ruleName));
 		ruleContent.setSourceInput();
 		ruleContent.setTargetInput();
 		
@@ -106,16 +106,16 @@ public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements Pro
 	public String getRuleContent(String ruleName) {
 		String content = null;
 
-		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace(DatabaseConstants.RuleEngineSpace);
+		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace(RuleEngineDatabaseConstants.RuleEngineSpace);
 
 		InformationExplorer ie = ids.getInformationExplorer();
 		ExploreParameters ep = new ExploreParameters();
-		ep.setType(DatabaseConstants.RuleFact);
+		ep.setType(RuleEngineDatabaseConstants.RuleFact);
 
-		ep.setDefaultFilteringItem(new EqualFilteringItem(DatabaseConstants.FACT_RULENAME, ruleName));
+		ep.setDefaultFilteringItem(new EqualFilteringItem(RuleEngineDatabaseConstants.FACT_RULENAME, ruleName));
 		try {
 			List<Fact> factList = ie.discoverFacts(ep);
-			content = factList.get(0).getProperty(DatabaseConstants.FACT_CONTENT).getPropertyValue().toString();
+			content = factList.get(0).getProperty(RuleEngineDatabaseConstants.FACT_CONTENT).getPropertyValue().toString();
 		} catch (InfoDiscoveryEngineRuntimeException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();

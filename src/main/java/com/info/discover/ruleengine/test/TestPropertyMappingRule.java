@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.info.discover.ruleengine.base.vo.RuleVO;
-import com.info.discover.ruleengine.manager.database.DatabaseConstants;
+import com.info.discover.ruleengine.manager.database.RuleEngineDatabaseConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingRuleEngineImpl;
 import com.infoDiscover.common.util.JsonUtil;
@@ -120,10 +120,10 @@ public class TestPropertyMappingRule {
 
             } catch (InfoDiscoveryEngineRuntimeException e) {
                 System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + DatabaseConstants.RuleFact);
+                System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
             }
         } else {
-            System.out.println("Failed to connect to database: " + DatabaseConstants.RuleEngineSpace);
+            System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
         }
 
         ids.closeSpace();
@@ -145,10 +145,10 @@ public class TestPropertyMappingRule {
 
             } catch (InfoDiscoveryEngineRuntimeException e) {
                 System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + DatabaseConstants.RuleFact);
+                System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
             }
         } else {
-            System.out.println("Failed to connect to database: " + DatabaseConstants.RuleEngineSpace);
+            System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
         }
 
         ids.closeSpace();

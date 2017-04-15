@@ -6,7 +6,7 @@ import com.infoDiscover.infoDiscoverEngine.util.factory.DiscoverEngineComponentF
 public class DataSpaceManager {
 	
 	public static InfoDiscoverSpace getInfoDiscoverSpace() {
-        return DiscoverEngineComponentFactory.connectInfoDiscoverSpace(DatabaseConstants.RuleEngineSpace);
+        return DiscoverEngineComponentFactory.connectInfoDiscoverSpace(RuleEngineDatabaseConstants.RuleEngineSpace);
     }
 	
 	public static boolean checkDataSapceExistence(String spaceName) {
@@ -20,4 +20,5 @@ public class DataSpaceManager {
 	public static boolean dropDataSpace(String spaceName) {
 		return DiscoverEngineComponentFactory.deleteInfoDiscoverSpace(spaceName);
 	}
+	
 }

@@ -46,7 +46,7 @@ public class FactManager {
 		logger.info("Exit method createFactType...");
 	}
 
-	public static void createFact(InfoDiscoverSpace ids, String factType, Map<String, Object> properties)
+	public static boolean createFact(InfoDiscoverSpace ids, String factType, Map<String, Object> properties)
 			throws InfoDiscoveryEngineRuntimeException {
 		logger.info("Start to createFact() with factType: " + factType + " and properties: " + properties);
 		if (ids != null) {
@@ -58,7 +58,11 @@ public class FactManager {
 				fact.addProperties(properties);
 				logger.info("End to add properties");
 			}
+			
+			return true;
 		}
+		
+		return false;
 	}
 
 	public static Fact getFact(InformationExplorer ie, ExploreParameters ep)
