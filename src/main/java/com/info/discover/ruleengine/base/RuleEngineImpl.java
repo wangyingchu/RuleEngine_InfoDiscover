@@ -55,7 +55,9 @@ public class RuleEngineImpl implements RuleEngine {
 		boolean result = false;
 		try {
 			result = RuleEngineFactManager.deleteRule(ids, DatabaseConstants.RuleFact, ruleId);
-		} catch (InfoDiscoveryEngineRuntimeException | InfoDiscoveryEngineInfoExploreException e) {
+		} catch (InfoDiscoveryEngineRuntimeException e) {
+			logger.error("Failed to delete rule: " + e.getMessage());
+		} catch (InfoDiscoveryEngineInfoExploreException e) {
 			logger.error("Failed to delete rule: " + e.getMessage());
 		} finally {
 			ids.closeSpace();
@@ -68,8 +70,12 @@ public class RuleEngineImpl implements RuleEngine {
 		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
 		try {
 			RuleEngineFactManager.updateRule(ids, DatabaseConstants.RuleFact, rule);
-		} catch (InfoDiscoveryEngineRuntimeException | InfoDiscoveryEngineInfoExploreException e) {
+		} catch (InfoDiscoveryEngineRuntimeException e) {
 			logger.error("Failed to update rule: " + e.getMessage());
+		} catch (InfoDiscoveryEngineInfoExploreException e) {
+			logger.error("Failed to update rule: " + e.getMessage());
+		} finally {
+			ids.closeSpace();
 		}
 	}
 
