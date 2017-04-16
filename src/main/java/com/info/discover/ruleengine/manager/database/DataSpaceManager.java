@@ -5,8 +5,12 @@ import com.infoDiscover.infoDiscoverEngine.util.factory.DiscoverEngineComponentF
 
 public class DataSpaceManager {
 	
-	public static InfoDiscoverSpace getInfoDiscoverSpace() {
-        return DiscoverEngineComponentFactory.connectInfoDiscoverSpace(RuleEngineDatabaseConstants.RuleEngineSpace);
+	public static InfoDiscoverSpace getInfoDiscoverSpace(String spaceName) {
+        return DiscoverEngineComponentFactory.connectInfoDiscoverSpace(spaceName);
+    }
+	
+	public static InfoDiscoverSpace getRuleEngineInfoDiscoverSpace() {
+        return getInfoDiscoverSpace(RuleEngineDatabaseConstants.RuleEngineSpace);
     }
 	
 	public static boolean checkDataSapceExistence(String spaceName) {

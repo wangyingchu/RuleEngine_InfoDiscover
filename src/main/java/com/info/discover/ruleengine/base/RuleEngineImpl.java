@@ -23,7 +23,7 @@ public class RuleEngineImpl implements RuleEngine {
 
 		logger.info("Start to createRule() with ruleName: " + rule.getName());
 		boolean result = false;
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		if (ids != null) {
 			result = RuleEngineFactManager.createRule(ids, rule);
 		} else {
@@ -36,7 +36,7 @@ public class RuleEngineImpl implements RuleEngine {
 	}
 
 	public boolean checkRuleExistence(String ruleId) {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			return RuleEngineFactManager.checkRuleExistence(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
 		} catch (InfoDiscoveryEngineRuntimeException e) {
@@ -52,7 +52,7 @@ public class RuleEngineImpl implements RuleEngine {
 
 	@Override
 	public boolean deleteRule(String ruleId) {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		boolean result = false;
 		try {
 			result = RuleEngineFactManager.deleteRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
@@ -68,7 +68,7 @@ public class RuleEngineImpl implements RuleEngine {
 
 	@Override
 	public boolean updateRule(RuleVO rule) {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			return RuleEngineFactManager.updateRule(ids, RuleEngineDatabaseConstants.RuleFact, rule);
 		} catch (InfoDiscoveryEngineRuntimeException e) {
@@ -84,7 +84,7 @@ public class RuleEngineImpl implements RuleEngine {
 
 	@Override
 	public RuleVO getRule(String ruleId) {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			return RuleEngineFactManager.getActiveRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
 		} catch (InfoDiscoveryEngineRuntimeException e) {
@@ -104,7 +104,7 @@ public class RuleEngineImpl implements RuleEngine {
 
 	@Override
 	public boolean deleteRule(String ruleId, boolean softDelete) {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			RuleVO rule = RuleEngineFactManager.getActiveRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
 			rule.setDeleted(true);

@@ -1,13 +1,17 @@
 package com.info.discover.ruleengine.test;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.info.discover.ruleengine.base.vo.RuleVO;
+import com.info.discover.ruleengine.manager.database.DataSpaceManager;
 import com.info.discover.ruleengine.manager.database.RuleEngineDatabaseConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingConstants;
 import com.info.discover.ruleengine.plugins.propertymapping.PropertyMappingRuleEngineImpl;
+import com.info.discover.ruleengine.plugins.propertymapping.sample.SampleRuleConstants;
 import com.infoDiscover.common.util.JsonUtil;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Dimension;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Fact;
@@ -15,142 +19,182 @@ import com.infoDiscover.infoDiscoverEngine.dataWarehouse.ExploreParameters;
 import com.infoDiscover.infoDiscoverEngine.dataWarehouse.InformationExplorer;
 import com.infoDiscover.infoDiscoverEngine.dataWarehouse.InformationFiltering.EqualFilteringItem;
 import com.infoDiscover.infoDiscoverEngine.infoDiscoverBureau.InfoDiscoverSpace;
+import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineDataMartException;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineInfoExploreException;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineRuntimeException;
 import com.infoDiscover.infoDiscoverEngine.util.factory.DiscoverEngineComponentFactory;
 
 public class TestPropertyMappingRule {
-    // TODO: should remove to unit tests
-    public static void main(String[] args) {
-        PropertyMappingRuleEngineImpl engine = new PropertyMappingRuleEngineImpl();
-        String ruleName = "ID_FACT_factTest";
-        String description = "test rule description";
+	// TODO: should remove to unit tests
+	public static void main(String[] args) {
+		PropertyMappingRuleEngineImpl engine = new PropertyMappingRuleEngineImpl();
+		String ruleName = "ID_FACT_factTest";
+		String description = "test rule description";
 
-        //addRule(ruleName,description);
-        
-        String ruleContent = engine.getRuleContent(ruleName);
-//        System.out.println(ruleContent);
+		// addRule(ruleName,description);
 
-//        verifyRuleContentIsJson(ruleContent);
+		String ruleContent = engine.getRuleContent(ruleName);
+		// System.out.println(ruleContent);
 
-        // add a fact test data
-        TestPropertyMappingRule test = new TestPropertyMappingRule();
-        test.addFactTestData("factTest", "animal", "this is a image");
+		// verifyRuleContentIsJson(ruleContent);
 
-        // add a dimension test data
-        //engine.addDimensionTestData("dimensionTest", "image", null);
+		// add a fact test data
+		TestPropertyMappingRule test = new TestPropertyMappingRule();
+		test.addFactTestData("factTest", "animal", "this is a image");
 
-        Fact fact = test.getTestFact("factTest","animal");
-        System.out.println(fact.getProperty("description").getPropertyValue().toString());
+		// add a dimension test data
+		// engine.addDimensionTestData("dimensionTest", "image", null);
 
-        List<Dimension> dimensionList = engine.executeRule("TestData", fact);
-        for(Dimension dimension: dimensionList) {
-        	System.out.println("Dimension rid: " + dimension.getId());
-        }
-    }
+		Fact fact = test.getTestFact("factTest", "animal");
+		System.out.println(fact.getProperty("description").getPropertyValue().toString());
 
-    private Fact getTestFact(String factType, String name) {
-        InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace
-                ("TestData");
-        InformationExplorer ie = ids.getInformationExplorer();
-        ExploreParameters ep = new ExploreParameters();
-        ep.setType(factType);
+		String ruleId = "SampleFact";
+		executeRule2(engine, "InfoDiscover_RuleEngine", ruleId);
+	}
 
-        ep.setDefaultFilteringItem(new EqualFilteringItem("name", name));
+	private static void executeRule1(PropertyMappingRuleEngineImpl engine, Fact fact) {
+		List<Dimension> dimensionList = engine.executeRule("TestData", fact);
+		for (Dimension dimension : dimensionList) {
+			System.out.println("Dimension rid: " + dimension.getId());
+		}
 
-        try {
-            List<Fact> factList = ie.discoverFacts(ep);
-            return factList.get(0);
-        } catch (InfoDiscoveryEngineRuntimeException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (InfoDiscoveryEngineInfoExploreException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        ids.closeSpace();
+		// link fact to dimensions
+		String spaceName = "TestData";
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace(spaceName);
+		try {
+			engine.linkFactToDimensionsByRelationType(ids, fact, dimensionList, SampleRuleConstants.RELATION_TYPE);
+		} catch (InfoDiscoveryEngineDataMartException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InfoDiscoveryEngineRuntimeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ids.closeSpace();
+	}
 
-        return null;
-    }
+	private static void executeRule2(PropertyMappingRuleEngineImpl engine, String spaceName, String ruleId) {
+		Map<String, List<Dimension>> results = new HashMap<String, List<Dimension>>();
+		
+		results = engine.executeRule(ruleId);
+		Set<String> keySet = results.keySet();
+		Iterator<String> it = keySet.iterator();
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace(spaceName);
+		while (it.hasNext()) {
+			String factRid = it.next();
+			List<Dimension> dimensionList = results.get(factRid);
+			try {
+				engine.linkFactToDimensionsByRelationType(ids, factRid, dimensionList,
+						SampleRuleConstants.RELATION_TYPE);
+			} catch (InfoDiscoveryEngineDataMartException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InfoDiscoveryEngineRuntimeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		ids.closeSpace();
+	}
 
-    private static void verifyRuleContentIsJson(String ruleContent) {
-        String sourceProperties = JsonUtil.getPropertyValues(PropertyMappingConstants
-                .JSON_SOURCE_PROPERTIES,ruleContent);
-        String targetType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_TYPE, ruleContent);
-        String targetProperty = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_PROPERTY,
-                ruleContent);
+	private Fact getTestFact(String factType, String name) {
+		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace("TestData");
+		InformationExplorer ie = ids.getInformationExplorer();
+		ExploreParameters ep = new ExploreParameters();
+		ep.setType(factType);
 
-        System.out.println("sourceProperties: " + sourceProperties);
-        System.out.println("targetType: " + targetType);
-        System.out.println("targetProperty: " + targetProperty);
-    }
+		ep.setDefaultFilteringItem(new EqualFilteringItem("name", name));
 
-    private static void addRule(String ruleName, String description) throws InfoDiscoveryEngineRuntimeException {
-        PropertyMappingRuleEngineImpl engine = new PropertyMappingRuleEngineImpl();
+		try {
+			List<Fact> factList = ie.discoverFacts(ep);
+			return factList.get(0);
+		} catch (InfoDiscoveryEngineRuntimeException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} catch (InfoDiscoveryEngineInfoExploreException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		ids.closeSpace();
 
-        HashMap<String, String> ruleContentMap = new HashMap<String, String>();
-        ruleContentMap.put("source", "Fact");
-        ruleContentMap.put("sourceType", "factTest");
-        ruleContentMap.put("sourceProperties", "name,description");
-        ruleContentMap.put("target", "Dimension");
-        ruleContentMap.put("targetType", "dimensionTest");
-        ruleContentMap.put("targetProperty", "name");
-        ruleContentMap.put("spaceName", "TestData");
+		return null;
+	}
 
-        String ruleContent = JsonUtil.mapToJsonStr(ruleContentMap);
-        System.out.println("ruleContent: " + ruleContent);
+	private static void verifyRuleContentIsJson(String ruleContent) {
+		String sourceProperties = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_PROPERTIES,
+				ruleContent);
+		String targetType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_TYPE, ruleContent);
+		String targetProperty = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_PROPERTY, ruleContent);
 
-        RuleVO rule = new RuleVO("ID_FACT_factTest", "ruleForFactTest","PropertyMapping", "desc", ruleContent, false);
-        engine.createRule(rule);
-    }
+		System.out.println("sourceProperties: " + sourceProperties);
+		System.out.println("targetType: " + targetType);
+		System.out.println("targetProperty: " + targetProperty);
+	}
 
-    private void addFactTestData(String factType, String name, String description) {
-        InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace
-                ("TestData");
-        if (ids != null) {
-            Fact fact = DiscoverEngineComponentFactory.createFact(factType);
-            try {
-                fact = ids.addFact(fact);
+	private static void addRule(String ruleName, String description) throws InfoDiscoveryEngineRuntimeException {
+		PropertyMappingRuleEngineImpl engine = new PropertyMappingRuleEngineImpl();
 
-                Map<String, Object> props = new HashMap<String, Object>();
-                props.put("name", name);
-                props.put("description", description);
+		HashMap<String, String> ruleContentMap = new HashMap<String, String>();
+		ruleContentMap.put("source", "Fact");
+		ruleContentMap.put("sourceType", "factTest");
+		ruleContentMap.put("sourceProperties", "name,description");
+		ruleContentMap.put("target", "Dimension");
+		ruleContentMap.put("targetType", "dimensionTest");
+		ruleContentMap.put("targetProperty", "name");
+		ruleContentMap.put("spaceName", "TestData");
 
-                fact.addProperties(props);
+		String ruleContent = JsonUtil.mapToJsonStr(ruleContentMap);
+		System.out.println("ruleContent: " + ruleContent);
 
-            } catch (InfoDiscoveryEngineRuntimeException e) {
-                System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
-            }
-        } else {
-            System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
-        }
+		RuleVO rule = new RuleVO("ID_FACT_factTest", "ruleForFactTest", "PropertyMapping", "desc", ruleContent, false);
+		engine.createRule(rule);
+	}
 
-        ids.closeSpace();
-    }
+	private void addFactTestData(String factType, String name, String description) {
+		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace("TestData");
+		if (ids != null) {
+			Fact fact = DiscoverEngineComponentFactory.createFact(factType);
+			try {
+				fact = ids.addFact(fact);
 
-    private void addDimensionTestData(String dimensionType, String name, String description) {
-        InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace
-                ("TestData");
-        if (ids != null) {
-            Dimension dimension = DiscoverEngineComponentFactory.createDimension(dimensionType);
-            try {
-                dimension = ids.addDimension(dimension);
+				Map<String, Object> props = new HashMap<String, Object>();
+				props.put("name", name);
+				props.put("description", description);
 
-                Map<String, Object> props = new HashMap<String, Object>();
-                props.put("name", name);
-                props.put("description", description);
+				fact.addProperties(props);
 
-                dimension.addProperties(props);
+			} catch (InfoDiscoveryEngineRuntimeException e) {
+				System.out.println(e.getMessage());
+				System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
+			}
+		} else {
+			System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
+		}
 
-            } catch (InfoDiscoveryEngineRuntimeException e) {
-                System.out.println(e.getMessage());
-                System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
-            }
-        } else {
-            System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
-        }
+		ids.closeSpace();
+	}
 
-        ids.closeSpace();
-    }
+	private void addDimensionTestData(String dimensionType, String name, String description) {
+		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace("TestData");
+		if (ids != null) {
+			Dimension dimension = DiscoverEngineComponentFactory.createDimension(dimensionType);
+			try {
+				dimension = ids.addDimension(dimension);
+
+				Map<String, Object> props = new HashMap<String, Object>();
+				props.put("name", name);
+				props.put("description", description);
+
+				dimension.addProperties(props);
+
+			} catch (InfoDiscoveryEngineRuntimeException e) {
+				System.out.println(e.getMessage());
+				System.out.println("Failed to insert values to fact: " + RuleEngineDatabaseConstants.RuleFact);
+			}
+		} else {
+			System.out.println("Failed to connect to database: " + RuleEngineDatabaseConstants.RuleEngineSpace);
+		}
+
+		ids.closeSpace();
+	}
 }

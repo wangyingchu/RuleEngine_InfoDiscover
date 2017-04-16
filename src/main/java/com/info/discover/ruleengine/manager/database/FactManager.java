@@ -57,11 +57,16 @@ public class FactManager {
 				fact.addProperties(properties);
 				logger.info("End to add properties");
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
+	}
+
+	public static List<Fact> getFacts(InformationExplorer ie, ExploreParameters ep)
+			throws InfoDiscoveryEngineRuntimeException, InfoDiscoveryEngineInfoExploreException {
+		return ie.discoverFacts(ep);
 	}
 
 	public static Fact getFact(InformationExplorer ie, ExploreParameters ep)

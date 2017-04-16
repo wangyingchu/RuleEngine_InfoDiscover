@@ -21,7 +21,7 @@ public class SampleDimensionData {
 	private static String[] names = { "animal", "image", "house", "music" };
 
 	public static void generateSampleRuleDimension() {
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		for (int i = 0; i < names.length; i++) {
 			Map<String, Object> properties = generateSamplePropertiesData(names[i], "", "");
 			try {
@@ -49,7 +49,7 @@ public class SampleDimensionData {
 
 	public static boolean checkDimensionIsCreate(String dimensionType) {
 		logger.info("Start to check sample dimension is created: " + dimensionType);
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		InformationExplorer ie = ids.getInformationExplorer();
 		ExploreParameters ep = new ExploreParameters();
 		ep.setType(dimensionType);

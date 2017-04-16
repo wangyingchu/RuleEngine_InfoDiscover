@@ -29,7 +29,7 @@ public class PropertyMappingInitializer {
 		
 		// 2. create ID_FACT_RULE fact type with properties
 		logger.info("Start to create ID_FACT_RULE table: " + RuleEngineDatabaseConstants.RuleFact);
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			RuleEngineFactManager.createRuleFactType(ids);
 		} catch (InfoDiscoveryEngineDataMartException e) {

@@ -66,7 +66,7 @@ public class SampleRuleExecution {
 
 	public static void prepareRelationType() {
 		logger.info("Start to create sample relation type: " + SampleRuleConstants.RELATION_TYPE);
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			RelationManager.createRelationType(ids, SampleRuleConstants.RELATION_TYPE, null);
 		} catch (InfoDiscoveryEngineDataMartException e) {
@@ -83,7 +83,7 @@ public class SampleRuleExecution {
 	public static void prepareFactType() {
 		logger.info("Start to create sample fact type: " + SampleRuleConstants.FACT_TYPE);
 
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			FactManager.createFactType(ids, SampleRuleConstants.FACT_TYPE, getSampleFactProperties());
 		} catch (InfoDiscoveryEngineDataMartException e) {
@@ -99,7 +99,7 @@ public class SampleRuleExecution {
 
 	public static void prepareDimensionType() {
 		logger.info("Start to create sample dimension type: " + SampleRuleConstants.DIMENSION_TYPE);
-		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 		try {
 			DimensionManager.createDimensionType(ids, SampleRuleConstants.DIMENSION_TYPE,
 					getSampleDimensionProperties());

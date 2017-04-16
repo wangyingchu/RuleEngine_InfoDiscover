@@ -1,13 +1,17 @@
 package com.info.discover.ruleengine.manager.database;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.infoDiscover.infoDiscoverEngine.dataMart.Dimension;
+import com.infoDiscover.infoDiscoverEngine.dataMart.Fact;
 import com.infoDiscover.infoDiscoverEngine.dataMart.PropertyType;
+import com.infoDiscover.infoDiscoverEngine.dataMart.Relation;
 import com.infoDiscover.infoDiscoverEngine.dataMart.RelationType;
 import com.infoDiscover.infoDiscoverEngine.infoDiscoverBureau.InfoDiscoverSpace;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineDataMartException;
@@ -42,5 +46,64 @@ public class RelationManager {
 
 		logger.info("Exit method createRelationType...");
 	}
+
+	public static Relation linkFactToDimensionByRelationType(InfoDiscoverSpace ids, Fact fromFact,
+			Dimension toDimension, String relationType)
+			throws InfoDiscoveryEngineDataMartException, InfoDiscoveryEngineRuntimeException {
+		logger.info("Enter method linkFactToDimensionByRelationType() with fromFactId: " + fromFact.getId() + " "
+				+ "and " + "toDimensionId: " + toDimension.getId() + " and relationType: " + relationType);
+
+		if (fromFact != null && toDimension != null) {
+
+			if (!ids.hasRelationType(relationType)) {
+				ids.addRelationType(relationType);
+			}
+
+			Relation r = ids.attachFactToDimension(fromFact.getId(), toDimension.getId(), relationType);
+			return r;
+		}
+
+		logger.info("Exit method linkFactToDimensionByRelationType()...");
+		return null;
+	}
+
+	public static void linkFactToDimensionsByRelationType(InfoDiscoverSpace ids, Fact fromFact,
+			List<Dimension> toDimensionList, String relationType)
+			throws InfoDiscoveryEngineDataMartException, InfoDiscoveryEngineRuntimeException {
+		logger.info(
+				"Enter method linkFactToDimensionsByRelationType() with fromFact: {} and dimensionList: {} and relationType: {}",
+				fromFact, toDimensionList, relationType);
+
+		if (fromFact != null && toDimensionList != null && toDimensionList.size() > 0) {
+
+			if (!ids.hasRelationType(relationType)) {
+				ids.addRelationType(relationType);
+			}
+			for (Dimension dimension : toDimensionList) {
+				ids.attachFactToDimension(fromFact.getId(), dimension.getId(), relationType);
+			}
+		}
+
+		logger.info("Exit method linkFactToDimensionsByRelationType()...");
+	}
 	
+	public static void linkFactToDimensionsByRelationType(InfoDiscoverSpace ids, String factId,
+			List<Dimension> toDimensionList, String relationType)
+			throws InfoDiscoveryEngineDataMartException, InfoDiscoveryEngineRuntimeException {
+		logger.info(
+				"Enter method linkFactToDimensionsByRelationType() with factId: {} and dimensionList: {} and relationType: {}",
+				factId, toDimensionList, relationType);
+
+		if (factId != null && toDimensionList != null && toDimensionList.size() > 0) {
+
+			if (!ids.hasRelationType(relationType)) {
+				ids.addRelationType(relationType);
+			}
+			for (Dimension dimension : toDimensionList) {
+				ids.attachFactToDimension(factId, dimension.getId(), relationType);
+			}
+		}
+
+		logger.info("Exit method linkFactToDimensionsByRelationType()...");
+	}
 }

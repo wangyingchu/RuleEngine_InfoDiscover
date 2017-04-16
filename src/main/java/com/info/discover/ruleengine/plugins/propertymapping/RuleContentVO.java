@@ -6,6 +6,7 @@ import com.infoDiscover.common.util.JsonUtil;
 
 public class RuleContentVO {
 	private String ruleContentJson;
+	private String spaceName;
 	private SourceInput source;
 	private TargetInput target;
 
@@ -49,4 +50,14 @@ public class RuleContentVO {
 	public TargetInput getTargetInput() {
 		return target;
 	}
+
+	public String getSpaceName() {
+		return spaceName;
+	}
+
+	public void setSpaceName() {
+		String spaceName = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SPACE, ruleContentJson);
+		this.spaceName = spaceName;
+	}
+	
 }

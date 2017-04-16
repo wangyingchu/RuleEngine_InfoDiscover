@@ -26,7 +26,7 @@ public class SampleFactData {
 	
 	public static void generateSampleRuleFact() {
 		if (toGenerateCount > 0) {
-			InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+			InfoDiscoverSpace ids = DataSpaceManager.getRuleEngineInfoDiscoverSpace();
 			for (int i = 0; i < toGenerateCount; i++){
 				Map<String, Object> properties = generateSamplePropertiesData();
 				try {
