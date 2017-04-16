@@ -14,7 +14,7 @@
 		<runtime.version>6.4.0.Final</runtime.version>
 	</properties>
 
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>jboss-public-repository-group</id>
 			<name>JBoss Public Repository Group</name>
@@ -28,7 +28,7 @@
 				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories> -->
 
 	<dependencies>
 		<!-- drools -->
@@ -60,15 +60,6 @@
 			<artifactId>DiscoverEngine_InfoDiscover</artifactId>
 			<version>1.0.0</version>
 			<systemPath>${project.basedir}/src/main/lib/DiscoverEngine_InfoDiscover-1.0.0.jar</systemPath>
-			<scope>system</scope>
-		</dependency>
-
-		<!-- orientdb -->
-		<dependency>
-			<groupId>com.orientechnologies</groupId>
-			<artifactId>orientdb-jdbc-all</artifactId>
-			<version>2.2.13</version>
-			<systemPath>${project.basedir}/src/main/lib/orientdb-jdbc-all-2.2.13.jar</systemPath>
 			<scope>system</scope>
 		</dependency>
 
