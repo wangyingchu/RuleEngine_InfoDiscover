@@ -100,7 +100,7 @@ public class TestPropertyMappingRule {
         String ruleContent = JsonUtil.mapToJsonStr(ruleContentMap);
         System.out.println("ruleContent: " + ruleContent);
 
-        RuleVO rule = new RuleVO("ID_FACT_factTest", "ruleForFactTest","PropertyMapping", "desc", ruleContent);
+        RuleVO rule = new RuleVO("ID_FACT_factTest", "ruleForFactTest","PropertyMapping", "desc", ruleContent, false);
         engine.createRule(rule);
     }
 

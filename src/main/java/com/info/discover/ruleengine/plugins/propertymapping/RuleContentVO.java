@@ -24,7 +24,7 @@ public class RuleContentVO {
 		input.setSource(source);
 		input.setSourceType(sourceType);
 		if (sourceProperties != null) {
-			input.setSourceProperties(sourceProperties.split(","));
+			input.setSourceProperties(sourceProperties.substring(1, sourceProperties.length() -1).split(","));
 		}
 		this.source = input;
 

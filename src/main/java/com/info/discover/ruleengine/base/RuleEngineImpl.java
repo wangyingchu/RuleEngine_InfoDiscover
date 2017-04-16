@@ -31,7 +31,7 @@ public class RuleEngineImpl implements RuleEngine {
 		}
 
 		ids.closeSpace();
-		
+
 		return result;
 	}
 
@@ -78,7 +78,7 @@ public class RuleEngineImpl implements RuleEngine {
 		} finally {
 			ids.closeSpace();
 		}
-		
+
 		return false;
 	}
 
@@ -86,7 +86,7 @@ public class RuleEngineImpl implements RuleEngine {
 	public RuleVO getRule(String ruleId) {
 		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
 		try {
-			return RuleEngineFactManager.getRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
+			return RuleEngineFactManager.getActiveRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
 		} catch (InfoDiscoveryEngineRuntimeException e) {
 			logger.error("Failed to get rule: " + e.getMessage());
 		} catch (InfoDiscoveryEngineInfoExploreException e) {
@@ -101,5 +101,20 @@ public class RuleEngineImpl implements RuleEngine {
 	public boolean checkRuleEngineDataspaceExistence() {
 		return DataSpaceManager.checkDataSapceExistence(RuleEngineDatabaseConstants.RuleEngineSpace);
 	}
-	
+
+	@Override
+	public boolean deleteRule(String ruleId, boolean softDelete) {
+		InfoDiscoverSpace ids = DataSpaceManager.getInfoDiscoverSpace();
+		try {
+			RuleVO rule = RuleEngineFactManager.getActiveRule(ids, RuleEngineDatabaseConstants.RuleFact, ruleId);
+			rule.setDeleted(true);
+			return RuleEngineFactManager.updateRule(ids, RuleEngineDatabaseConstants.RuleFact, rule);
+		} catch (InfoDiscoveryEngineRuntimeException e) {
+			logger.error("Failed to get rule: " + e.getMessage());
+		} catch (InfoDiscoveryEngineInfoExploreException e) {
+			logger.error("Failed to get rule: " + e.getMessage());
+		}
+		return false;
+	}
+
 }

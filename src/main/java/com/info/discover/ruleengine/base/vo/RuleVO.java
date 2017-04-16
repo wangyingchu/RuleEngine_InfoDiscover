@@ -6,13 +6,15 @@ public class RuleVO {
 	private String type;
     private String description;
     private String content;
+    private boolean deleted;
     
-    public RuleVO(String ruleId, String name, String type, String description, String content) {
+    public RuleVO(String ruleId, String name, String type, String description, String content, boolean deleted) {
     	this.ruleId = ruleId;
     	this.name = name;
     	this.type = type;
     	this.description = description;
     	this.content = content;
+    	this.deleted = deleted;
     }
     
 	public String getRuleId() {
@@ -46,6 +48,14 @@ public class RuleVO {
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

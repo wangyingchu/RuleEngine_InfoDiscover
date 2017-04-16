@@ -11,5 +11,6 @@ public class RuleEngineDatabaseConstants {
 	public final static String FACT_TYPE = "type";
 	public final static String FACT_DESCRIPTION = "description";
 	public final static String FACT_CONTENT = "content";
+	public final static String FACT_DELETED = "deleted";
 
 }

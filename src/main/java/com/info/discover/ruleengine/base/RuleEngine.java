@@ -12,6 +12,8 @@ public interface RuleEngine {
      
     public boolean deleteRule(String ruleId);
     
+    public boolean deleteRule(String ruleId, boolean softDelete);
+    
     public RuleVO getRule(String ruleId);
     
     public boolean checkRuleEngineDataspaceExistence();
