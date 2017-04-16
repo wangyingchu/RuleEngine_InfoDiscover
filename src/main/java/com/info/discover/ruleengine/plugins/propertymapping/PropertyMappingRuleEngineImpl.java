@@ -3,39 +3,48 @@ package com.info.discover.ruleengine.plugins.propertymapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.info.discover.drools.DroolsExecutor;
 import com.info.discover.drools.rules.propertyMapping.PropertyMappingOutput;
 import com.info.discover.drools.rules.propertyMapping.PropertyMappingRuleConstants;
 import com.info.discover.ruleengine.base.RuleEngineImpl;
-import com.info.discover.ruleengine.manager.database.RuleEngineDatabaseConstants;
+import com.info.discover.ruleengine.base.vo.RuleVO;
 import com.info.discover.ruleengine.util.RuleHelper;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Dimension;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Fact;
 import com.infoDiscover.infoDiscoverEngine.dataMart.Relation;
 import com.infoDiscover.infoDiscoverEngine.dataWarehouse.ExploreParameters;
 import com.infoDiscover.infoDiscoverEngine.dataWarehouse.InformationExplorer;
-import com.infoDiscover.infoDiscoverEngine.dataWarehouse.InformationFiltering.EqualFilteringItem;
 import com.infoDiscover.infoDiscoverEngine.dataWarehouse.InformationFiltering.InValueFilteringItem;
 import com.infoDiscover.infoDiscoverEngine.infoDiscoverBureau.InfoDiscoverSpace;
-import com.infoDiscover.infoDiscoverEngine.util.InfoDiscoverEngineConstant;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineInfoExploreException;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineRuntimeException;
 import com.infoDiscover.infoDiscoverEngine.util.factory.DiscoverEngineComponentFactory;
 
 public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements PropertyMappingRuleEngine {
+	private final static Logger logger = LoggerFactory.getLogger(PropertyMappingRuleEngineImpl.class);
+
+	public String getRuleId(String spaceName, String factType) {
+		return spaceName + "_" + factType;
+	}
 	
 	public List<Dimension> executeRule(String spaceName, Fact fact) {
-		String ruleName = InfoDiscoverEngineConstant.CLASSPERFIX_FACT + fact.getType();
+		logger.info("Start to executeRule with spaceName: {} and fact: {}", spaceName, fact);
 
-		RuleContentVO ruleContent = new RuleContentVO(getRuleContent(ruleName));
+		String ruleId = getRuleId(spaceName, fact.getType());
+
+		RuleContentVO ruleContent = new RuleContentVO(getRuleContent(ruleId));
 		ruleContent.setSourceInput();
 		ruleContent.setTargetInput();
-		
-		PropertyMappingOutput output = DroolsExecutor.executeRule(PropertyMappingRuleConstants.PROPERTY_MAPPING_RULE_NAME,
-				ruleContent.getSourceInput(), ruleContent.getTargetInput());
+
+		PropertyMappingOutput output = DroolsExecutor.executeRule(
+				PropertyMappingRuleConstants.PROPERTY_MAPPING_RULE_NAME, ruleContent.getSourceInput(),
+				ruleContent.getTargetInput());
 
 		// 1. get all the dimensions' names
-		String[] dimensionNames = RuleHelper.getAllDimensionNames(spaceName,output.getTargetType());
+		String[] dimensionNames = RuleHelper.getAllDimensionNames(spaceName, output.getTargetType());
 
 		// 2. loop through the names to find the ones that included in
 		// Fact's name or Fact's
@@ -50,9 +59,10 @@ public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements Pro
 		}
 
 		// 3. get the matched dimension list via the dimension name list
-		List<Dimension> dimensionList = getMatchedDimensionList(spaceName, output.getTargetType(), output.getTargetProperty(),
-				matchedDimensionNamesList);
+		List<Dimension> dimensionList = getMatchedDimensionList(spaceName, output.getTargetType(),
+				output.getTargetProperty(), matchedDimensionNamesList);
 
+		logger.info("End to execute rule");
 		return dimensionList;
 
 	}
@@ -85,10 +95,12 @@ public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements Pro
 
 		boolean matched = false;
 		for (String propertyName : sourceProperties) {
-			String properValue = fact.getProperty(propertyName).getPropertyValue().toString();
-			if (!matched && properValue.indexOf(dimensionName) != -1) {
-				matched = true;
-				break;
+			Object propertyValue = fact.getProperty(propertyName.trim()).getPropertyValue();
+			if (propertyValue != null) {
+				if (!matched && propertyValue.toString().indexOf(dimensionName) != -1) {
+					matched = true;
+					break;
+				}
 			}
 		}
 
@@ -103,30 +115,11 @@ public class PropertyMappingRuleEngineImpl extends RuleEngineImpl implements Pro
 
 	}
 
-	public String getRuleContent(String ruleName) {
-		String content = null;
-
-		InfoDiscoverSpace ids = DiscoverEngineComponentFactory.connectInfoDiscoverSpace(RuleEngineDatabaseConstants.RuleEngineSpace);
-
-		InformationExplorer ie = ids.getInformationExplorer();
-		ExploreParameters ep = new ExploreParameters();
-		ep.setType(RuleEngineDatabaseConstants.RuleFact);
-
-		ep.setDefaultFilteringItem(new EqualFilteringItem(RuleEngineDatabaseConstants.FACT_RULENAME, ruleName));
-		try {
-			List<Fact> factList = ie.discoverFacts(ep);
-			content = factList.get(0).getProperty(RuleEngineDatabaseConstants.FACT_CONTENT).getPropertyValue().toString();
-		} catch (InfoDiscoveryEngineRuntimeException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		} catch (InfoDiscoveryEngineInfoExploreException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-
-		ids.closeSpace();
-
-		return content;
+	public String getRuleContent(String ruleId) {
+		logger.info("Start to getRuleContent with ruleId: {}", ruleId);
+		RuleVO rule = new PropertyMappingRuleEngineImpl().getRule(ruleId);
+		logger.info("End to getRuleContent");
+		return rule == null ? null : rule.getContent();
 	}
 
 }

@@ -10,9 +10,9 @@ import com.infoDiscover.infoDiscoverEngine.infoDiscoverBureau.InfoDiscoverSpace;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineDataMartException;
 import com.infoDiscover.infoDiscoverEngine.util.exception.InfoDiscoveryEngineRuntimeException;
 
-public class Execution {
+public class PropertyMappingInitializer {
 
-	private final static Logger logger = LoggerFactory.getLogger(Execution.class);
+	private final static Logger logger = LoggerFactory.getLogger(PropertyMappingInitializer.class);
 
 	public static void initRuleEngine() {
 		logger.info("Start to initialize RuleEngine...");

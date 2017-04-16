@@ -1,0 +1,23 @@
+{
+    "data": {
+        "SampleDimensionType": {
+            "properties": [
+                {
+                    "propertyType": "String",
+                    "propertyName": "name",
+                    "propertyValue": ""
+                },
+                {
+                    "propertyType": "String",
+                    "propertyName": "description",
+                    "propertyValue": ""
+                },
+                {
+                    "propertyType": "String",
+                    "propertyName": "keywords",
+                    "propertyValue": ""
+                }
+            ]
+        }
+    }
+}

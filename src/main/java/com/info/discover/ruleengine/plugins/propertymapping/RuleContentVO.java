@@ -15,13 +15,13 @@ public class RuleContentVO {
 
 	public void setSourceInput() {
 
-		String source = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE, ruleContentJson);
+//		String source = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE, ruleContentJson);
 		String sourceType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_TYPE, ruleContentJson);
 		String sourceProperties = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_SOURCE_PROPERTIES,
 				ruleContentJson);
 
 		SourceInput input = new SourceInput();
-		input.setSource(source);
+//		input.setSource(source);
 		input.setSourceType(sourceType);
 		if (sourceProperties != null) {
 			input.setSourceProperties(sourceProperties.substring(1, sourceProperties.length() -1).split(","));
@@ -31,12 +31,12 @@ public class RuleContentVO {
 	}
 
 	public void setTargetInput() {
-		String target = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET, ruleContentJson);
+//		String target = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET, ruleContentJson);
 		String targetType = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_TYPE, ruleContentJson);
 		String targetProperty = JsonUtil.getPropertyValues(PropertyMappingConstants.JSON_TARGET_PROPERTY, ruleContentJson);
 
 		TargetInput input = new TargetInput();
-		input.setTarget(target);
+//		input.setTarget(target);
 		input.setTargetType(targetType);
 		input.setTargetProperty(targetProperty);
 		this.target = input;
