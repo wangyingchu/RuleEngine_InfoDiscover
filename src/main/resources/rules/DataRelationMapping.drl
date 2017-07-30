@@ -1,0 +1,16 @@
+package com.info.discover
+
+//list any import classes here.
+import com.info.discover.ruleengine.solution.pojo.RuleSourceInput
+
+
+//declare any global variables here
+global com.info.discover.ruleengine.solution.pojo.RelationMappingVO RelationMappingVO;
+
+rule "DataRelationMappingRule"
+	no-loop true
+    when
+        ruleSourceInput: RuleSourceInput(sourceType: sourceDataFactType)
+    then
+        relationMappingVO
+end
