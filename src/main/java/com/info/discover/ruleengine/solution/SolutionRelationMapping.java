@@ -301,8 +301,10 @@ public class SolutionRelationMapping {
 			Object sourceDataPropertyType = fact.getProperty("sourceDataPropertyType").getPropertyValue();
 			Object targetDataTypeKind = fact.getProperty("targetDataTypeKind").getPropertyValue();
 			Object targetDataTypeName = fact.getProperty("targetDataTypeName").getPropertyValue();
-			Object targetDataPropertyName = fact.getProperty("targetDataTypeName").getPropertyValue();
+			Object targetDataPropertyName = fact.getProperty("targetDataPropertyName").getPropertyValue();
 			Object targetDataPropertyType = fact.getProperty("targetDataPropertyType").getPropertyValue();
+			Object targetDataPropertyValue = fact.getProperty("targetDataPropertyValue") == null ? null :
+				fact.getProperty("targetDataPropertyValue").getPropertyValue();
 			Object relationTypeName = fact.getProperty("relationTypeName").getPropertyValue();
 			Object relationDirection = fact.getProperty("relationDirection").getPropertyValue();
 			Object minValue = fact.getProperty("minValue") == null ? null
@@ -321,6 +323,7 @@ public class SolutionRelationMapping {
 			pojo.setTargetDataTypeName(targetDataTypeName == null ? null : targetDataTypeName.toString());
 			pojo.setTargetDataPropertyName(targetDataPropertyName == null ? null : targetDataPropertyName.toString());
 			pojo.setTargetDataPropertyType(targetDataPropertyType == null ? null : targetDataPropertyType.toString());
+			pojo.setTargetDataPropertyValue(targetDataPropertyValue == null ? null : targetDataPropertyValue.toString());
 			pojo.setRelationTypeName(relationTypeName == null ? null : relationTypeName.toString());
 			pojo.setRelationDirection(relationDirection.toString());
 			pojo.setMinValue(minValue == null ? null : minValue.toString());
