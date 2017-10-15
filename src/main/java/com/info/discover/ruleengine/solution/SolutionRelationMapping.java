@@ -103,7 +103,7 @@ public class SolutionRelationMapping {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Failed to connect to {}", spaceName);
+			logger.error("Failed to connect to spaceName {} with error: {}", spaceName, e.getMessage());
 		} finally {
 			ids.closeSpace();
 		}
